@@ -1,0 +1,171 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime, timedelta
+import random
+
+class MovieDataGenerator:
+    def __init__(self, seed=42):
+        np.random.seed(seed)
+        random.seed(seed)
+        
+        self.sample_movies = [
+            ('tt0111161', 'The Shawshank Redemption', 1994, 'Drama', 9.3, 'Frank Darabont'),
+            ('tt0468569', 'The Dark Knight', 2008, 'Action,Crime,Drama', 9.0, 'Christopher Nolan'),
+            ('tt0137523', 'Fight Club', 1999, 'Drama', 8.8, 'David Fincher'),
+            ('tt1375666', 'Inception', 2010, 'Action,Sci-Fi,Thriller', 8.8, 'Christopher Nolan'),
+            ('tt0816692', 'Interstellar', 2014, 'Adventure,Drama,Sci-Fi', 8.7, 'Christopher Nolan'),
+            ('tt0109830', 'Forrest Gump', 1994, 'Drama,Romance', 8.8, 'Robert Zemeckis'),
+            ('tt0133093', 'The Matrix', 1999, 'Action,Sci-Fi', 8.7, 'Lana Wachowski'),
+            ('tt0167260', 'The Lord of the Rings: The Return of the King', 2003, 'Adventure,Drama,Fantasy', 9.0, 'Peter Jackson'),
+            ('tt0110912', 'Pulp Fiction', 1994, 'Crime,Drama', 8.9, 'Quentin Tarantino'),
+            ('tt0073486', 'One Flew Over the Cuckoos Nest', 1975, 'Drama', 8.7, 'Milos Forman'),
+            ('tt0099685', 'Goodfellas', 1990, 'Biography,Crime,Drama', 8.7, 'Martin Scorsese'),
+            ('tt0120737', 'The Lord of the Rings: The Fellowship of the Ring', 2001, 'Adventure,Drama,Fantasy', 8.9, 'Peter Jackson'),
+            ('tt0167261', 'The Lord of the Rings: The Two Towers', 2002, 'Adventure,Drama,Fantasy', 8.8, 'Peter Jackson'),
+            ('tt0080684', 'Star Wars: Episode V - The Empire Strikes Back', 1980, 'Action,Adventure,Fantasy', 8.7, 'Irvin Kershner'),
+            ('tt0114369', 'Se7en', 1995, 'Crime,Drama,Mystery', 8.6, 'David Fincher'),
+            ('tt0047478', '12 Angry Men', 1957, 'Crime,Drama', 9.0, 'Sidney Lumet'),
+            ('tt0317248', 'City of God', 2002, 'Crime,Drama', 8.6, 'Fernando Meirelles'),
+            ('tt0245429', 'Spirited Away', 2001, 'Animation,Adventure,Family', 8.6, 'Hayao Miyazaki'),
+            ('tt0120815', 'Saving Private Ryan', 1998, 'Drama,War', 8.6, 'Steven Spielberg'),
+            ('tt0054215', 'Psycho', 1960, 'Horror,Mystery,Thriller', 8.5, 'Alfred Hitchcock'),
+            ('tt0103064', 'Terminator 2: Judgment Day', 1991, 'Action,Sci-Fi', 8.6, 'James Cameron'),
+            ('tt0076759', 'Star Wars: Episode IV - A New Hope', 1977, 'Action,Adventure,Fantasy', 8.6, 'George Lucas'),
+            ('tt0102926', 'The Silence of the Lambs', 1991, 'Crime,Drama,Thriller', 8.6, 'Jonathan Demme'),
+            ('tt0038650', 'Its a Wonderful Life', 1946, 'Drama,Family,Fantasy', 8.6, 'Frank Capra'),
+            ('tt0095327', 'Grave of the Fireflies', 1988, 'Animation,Drama,War', 8.5, 'Isao Takahata'),
+            ('tt0078748', 'Alien', 1979, 'Horror,Sci-Fi', 8.5, 'Ridley Scott'),
+            ('tt0078788', 'Apocalypse Now', 1979, 'Drama,Mystery,War', 8.5, 'Francis Ford Coppola'),
+            ('tt0095765', 'Cinema Paradiso', 1988, 'Drama', 8.5, 'Giuseppe Tornatore'),
+            ('tt0253474', 'The Pianist', 2002, 'Biography,Drama,Music', 8.5, 'Roman Polanski'),
+            ('tt0172495', 'Gladiator', 2000, 'Action,Adventure,Drama', 8.5, 'Ridley Scott'),
+        ]
+    
+    def generate_imdb_dataset(self, output_file='data/imdb_movies.csv'):
+        print("Generating IMDb movie dataset...")
+        
+        movies_data = []
+        for movie_id, title, year, genres, rating, director in self.sample_movies:
+            movies_data.append({
+                'tconst': movie_id,
+                'titleType': 'movie',
+                'primaryTitle': title,
+                'originalTitle': title,
+                'isAdult': 0,
+                'startYear': year,
+                'endYear': None,
+                'runtimeMinutes': random.randint(90, 180),
+                'genres': genres,
+                'averageRating': rating,
+                'numVotes': random.randint(100000, 2000000),
+                'director': director
+            })
+        
+        df = pd.DataFrame(movies_data)
+        df.to_csv(output_file, index=False)
+        print(f"Saved {len(df)} movies to {output_file}")
+        return df
+    
+    def generate_streaming_availability(self, movies_df, output_file='data/streaming_platforms.csv'):
+        print("Generating streaming availability data...")
+        
+        platforms = ['netflix', 'prime_video', 'disney_plus', 'hulu', 'hbo_max', 'apple_tv_plus']
+        
+        streaming_data = []
+        for _, movie in movies_df.iterrows():
+            availability = {
+                'movie_id': movie['tconst'],
+                'title': movie['primaryTitle']
+            }
+            
+            for platform in platforms:
+                availability[platform] = 1 if random.random() < 0.4 else 0
+            
+            if sum([availability[p] for p in platforms]) == 0:
+                availability[random.choice(platforms)] = 1
+            
+            streaming_data.append(availability)
+        
+        df = pd.DataFrame(streaming_data)
+        df.to_csv(output_file, index=False)
+        print(f"Saved streaming data to {output_file}")
+        return df
+    
+    def generate_user_interactions(self, movies_df, n_users=10000, n_interactions=1000000, 
+                                   output_file='data/user_interactions.csv'):
+        print(f"Generating {n_interactions:,} user interactions...")
+        
+        movie_genres = movies_df['genres'].str.split(',').tolist()
+        all_genres = set()
+        for genres in movie_genres:
+            all_genres.update([g.strip() for g in genres])
+        
+        user_profiles = {}
+        for user_id in range(n_users):
+            preferred_genres = random.sample(list(all_genres), random.randint(2, 4))
+            user_profiles[f'user_{user_id}'] = preferred_genres
+        
+        interactions = []
+        movie_ids = movies_df['tconst'].tolist()
+        movie_genres_dict = dict(zip(movies_df['tconst'], movie_genres))
+        
+        for _ in range(n_interactions):
+            user_id = f'user_{random.randint(0, n_users-1)}'
+            user_prefs = user_profiles[user_id]
+            
+            if random.random() < 0.7:
+                matching_movies = []
+                for movie_id, genres in movie_genres_dict.items():
+                    if any(genre.strip() in user_prefs for genre in genres):
+                        matching_movies.append(movie_id)
+                
+                if matching_movies:
+                    movie_id = random.choice(matching_movies)
+                else:
+                    movie_id = random.choice(movie_ids)
+            else:
+                movie_id = random.choice(movie_ids)
+            
+            movie_genres_list = movie_genres_dict[movie_id]
+            if any(genre.strip() in user_prefs for genre in movie_genres_list):
+                rating = random.choices([3, 4, 5], weights=[0.2, 0.3, 0.5])[0]
+            else:
+                rating = random.choices([1, 2, 3, 4, 5], weights=[0.1, 0.2, 0.3, 0.25, 0.15])[0]
+            
+            days_ago = random.randint(0, 730)
+            timestamp = int((datetime.now() - timedelta(days=days_ago)).timestamp())
+            
+            interactions.append({
+                'user_id': user_id,
+                'movie_id': movie_id,
+                'rating': rating,
+                'timestamp': timestamp
+            })
+        
+        df = pd.DataFrame(interactions)
+        df = df.sort_values('timestamp')
+        df = df.drop_duplicates(subset=['user_id', 'movie_id'], keep='last')
+        
+        df.to_csv(output_file, index=False)
+        print(f"Saved {len(df):,} unique interactions to {output_file}")
+        print(f"Users: {df['user_id'].nunique():,}")
+        print(f"Movies: {df['movie_id'].nunique()}")
+        
+        return df
+
+def generate_all_data():
+    print("\n" + "="*70)
+    print("MOVIE DATA GENERATOR")
+    print("="*70 + "\n")
+    
+    generator = MovieDataGenerator()
+    movies_df = generator.generate_imdb_dataset()
+    streaming_df = generator.generate_streaming_availability(movies_df)
+    interactions_df = generator.generate_user_interactions(movies_df)
+    
+    print("\n" + "="*70)
+    print("DATA GENERATION COMPLETE!")
+    print("="*70)
+
+if __name__ == "__main__":
+    generate_all_data()

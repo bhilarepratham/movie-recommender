@@ -1,0 +1,18 @@
+2026-01-04 22:57:47,940 - INFO - Loading IMDb data from data/imdb_movies.csv
+2026-01-04 22:57:47,954 - INFO - Loaded 20 movies
+2026-01-04 22:57:47,954 - INFO - Loading streaming data from data/streaming_platforms.csv
+2026-01-04 22:57:47,963 - INFO - Loaded streaming data for 20 movies
+2026-01-04 22:57:47,963 - INFO - Loading interactions from data/user_interactions.csv
+2026-01-04 22:57:48,004 - INFO - Loaded 99,314 interactions
+2026-01-04 22:57:48,008 - INFO -   Users: 5,000
+2026-01-04 22:57:48,011 - INFO -   Movies: 20
+2026-01-04 22:58:03,815 - INFO - Temporal split: 79964 train, 19350 test
+2026-01-04 22:58:03,863 - INFO - Filtered: 79964 -> 79964 interactions
+2026-01-04 22:58:03,869 - INFO - Users: 5000, Movies: 20
+2026-01-04 22:58:03,876 - INFO - Created mappings: 5000 users, 20 movies
+2026-01-04 22:58:03,886 - INFO - Built matrix: (5000, 20), density: 79.9640%
+2026-01-04 22:58:03,886 - INFO - Initializing SVD model...
+2026-01-04 22:58:03,887 - INFO - Training with SVD...
+2026-01-04 22:58:03,899 - INFO - Training complete!
+2026-01-04 22:58:03,899 - INFO - Starting evaluation...
+2026-01-04 22:58:41,468 - INFO - Evaluation complete!
