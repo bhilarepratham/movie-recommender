@@ -57,3 +57,6 @@ data/
 !data/streaming_platforms.csv
 !data/user_interactions.csv
 !data/indian_movies.csv
+
+# Streamlit secrets
+.streamlit/secrets.toml

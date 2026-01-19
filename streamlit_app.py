@@ -17,10 +17,12 @@ def verify_tmdb_authentication():
     """Verify TMDB API authentication status"""
     url = "https://api.themoviedb.org/3/authentication"
     
+
     headers = {
         "accept": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        "Authorization": f"Bearer {st.secrets['tmdb_token']}"
     }
+
     
     try:
         response = requests.get(url, headers=headers)
@@ -211,7 +213,7 @@ def get_movie_details(title, year, imdb_id=None, content_type='movie'):
     
     # We need to find the TMDB ID first to get details and providers
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         endpoint = "tv" if content_type and content_type.lower() in ['tv', 'tvseries', 'tvmovie'] else "movie"
         url = f"https://api.themoviedb.org/3/search/{endpoint}"
         headers = {"accept": "application/json", "Authorization": f"Bearer {bearer_token}"}
@@ -236,7 +238,7 @@ def get_movie_details(title, year, imdb_id=None, content_type='movie'):
     # If we have TMDB ID, get full details (credits for Director) and Watch Providers
     if tmdb_id:
         try:
-            bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+            bearer_token = st.secrets["tmdb_token"]
             
             # Get Credits (Director)
             credits_url = f"https://api.themoviedb.org/3/{endpoint}/{tmdb_id}/credits"
@@ -279,7 +281,7 @@ def get_movie_details(title, year, imdb_id=None, content_type='movie'):
 def get_poster_from_tmdb_bearer(title, year, content_type='movie'):
     """Fetch poster from TMDB API using Bearer token authentication"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         # Determine endpoint based on content type
         endpoint = "tv" if content_type and content_type.lower() in ['tv', 'tvseries', 'tvmovie'] else "movie"
@@ -315,7 +317,7 @@ def get_poster_from_tmdb_bearer(title, year, content_type='movie'):
 def get_tmdb_movie_details(movie_id):
     """Fetch movie details from TMDB by ID"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/movie/{movie_id}"
         
@@ -341,7 +343,7 @@ def get_tmdb_movie_details(movie_id):
 def get_tmdb_movie_images(movie_id):
     """Fetch movie images (posters, backdrops) from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/movie/{movie_id}/images"
         
@@ -363,7 +365,7 @@ def get_tmdb_movie_images(movie_id):
 def get_tmdb_trending():
     """Fetch trending movies from TMDB discover endpoint"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = "https://api.themoviedb.org/3/discover/movie"
         
@@ -394,7 +396,7 @@ def get_tmdb_trending():
 def get_tmdb_trending_tv():
     """Fetch trending TV series from TMDB discover endpoint"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = "https://api.themoviedb.org/3/discover/tv"
         
@@ -425,7 +427,7 @@ def get_tmdb_trending_tv():
 def get_tmdb_daily_trending():
     """Fetch daily trending content (movies & TV) from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = "https://api.themoviedb.org/3/trending/all/day"
         
@@ -452,7 +454,7 @@ def get_tmdb_daily_trending():
 def search_tmdb_collections(query):
     """Search for movie collections from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = "https://api.themoviedb.org/3/search/collection"
         
@@ -482,7 +484,7 @@ def search_tmdb_collections(query):
 def get_tmdb_collection_details(collection_id):
     """Fetch collection details from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/collection/{collection_id}"
         
@@ -508,7 +510,7 @@ def get_tmdb_collection_details(collection_id):
 def get_tmdb_collection_images(collection_id):
     """Fetch collection images from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/collection/{collection_id}/images"
         
@@ -530,7 +532,7 @@ def get_tmdb_collection_images(collection_id):
 def get_tmdb_watch_providers(movie_id):
     """Fetch watch providers for a movie from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers"
         
@@ -554,7 +556,7 @@ def get_tmdb_watch_providers(movie_id):
 def get_tmdb_tv_watch_providers(series_id):
     """Fetch watch providers for a TV series from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/tv/{series_id}/watch/providers"
         
@@ -578,7 +580,7 @@ def get_tmdb_tv_watch_providers(series_id):
 def get_tmdb_tv_series_images(series_id):
     """Fetch TV series images from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/tv/{series_id}/images"
         
@@ -600,7 +602,7 @@ def get_tmdb_tv_series_images(series_id):
 def get_tmdb_tv_series_details(series_id):
     """Fetch TV series details from TMDB"""
     try:
-        bearer_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0MTVhZTQ0MmJkMmY2YWFjNDhjM2M4ODc5MjViNGQ1ZiIsIm5iZiI6MTc2ODEwMDE0My45MDIwMDAyLCJzdWIiOiI2OTYzMTEyZjJmNDU2YzIwNGExNzFlMDYiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.k1Astjr0GL-Waej7WNvU_gbIhBF6w6FgHvs-4dexCXE"
+        bearer_token = st.secrets["tmdb_token"]
         
         url = f"https://api.themoviedb.org/3/tv/{series_id}"
         
@@ -625,7 +627,7 @@ def get_tmdb_tv_series_details(series_id):
 def get_poster_from_omdb(title, year, imdb_id=None):
     """Fetch poster from OMDB"""
     try:
-        api_key = "e1b36e38"
+        api_key = st.secrets["omdb_key"]
         
         if imdb_id:
             url = f"http://www.omdbapi.com/?i={imdb_id}&apikey={api_key}"
@@ -649,7 +651,7 @@ def get_poster_from_omdb(title, year, imdb_id=None):
 def get_omdb_data(title, year, imdb_id=None):
     """Fetch plot, director, and other info from OMDB"""
     try:
-        api_key = "e1b36e38"
+        api_key = st.secrets["omdb_key"]
         
         if imdb_id:
             url = f"http://www.omdbapi.com/?i={imdb_id}&apikey={api_key}"
