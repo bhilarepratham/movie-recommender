@@ -51,5 +51,9 @@ coverage.xml
 .DS_Store
 Thumbs.db
 
-# Data
+# Data (Ignore all except required app files)
 data/
+!data/imdb_movies.csv
+!data/streaming_platforms.csv
+!data/user_interactions.csv
+!data/indian_movies.csv
